@@ -1,0 +1,83 @@
+body {
+  margin: 0;
+  background-color: #fbf4ef;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.container {
+  max-width: 80rem;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.recipe-card {
+  min-height: 10vh;
+  padding: 10px;
+}
+
+.clear-btn,
+.add-btn,
+.favorite-btn {
+  border-radius: 10px;
+  margin: 10px;
+  padding: 10px;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.clear-btn {
+  background-color: #aaabae;
+  color: #fbf4ef;
+}
+
+.favorite-btn,
+.add-btn {
+  background-color: #975e64;
+  color: #fbf4ef;
+}
+
+.clear-btn:hover,
+.favorite-btn:hover,
+.add-btn:hover {
+  opacity: 0.9;
+}
+
+.search-bar {
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+  width: 200px;
+  box-shadow: 3px 3px 10px #888888;
+}
+
+.select-filter {
+  border: none;
+  padding: 5px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #e8eaeb;
+}
+
+.images {
+  border-radius: 20px;
+  height: 200px;
+}
+
+.dietary-tags {
+  font-weight: bold;
+  font-style: italic;
+}
