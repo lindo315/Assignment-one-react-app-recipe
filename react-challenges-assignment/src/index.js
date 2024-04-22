@@ -49,33 +49,33 @@ function App() {
   // State variables to manage recipes, favorites, filters, and whether to show favorites only
   const [recipes] = useState(recipeData);
   const [favorites, setFavorites] = useState([]);
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [onlyFavorites, defaultFavorites] = useState(false);
   const [filters, setFilters] = useState({ dietary: [], search: "" });
 
   // Function to handle adding/removing a recipe to/from favorites
-  const handleFavorite = (recipeId) => {
+  function favoriteFunction(recipeId) {
     if (favorites.includes(recipeId)) {
       setFavorites(favorites.filter((id) => id !== recipeId));
     } else {
       setFavorites([...favorites, recipeId]);
     }
-  };
+  }
 
   // This handles applying dietary filters - using arrow functions because they're easier
-  const handleDietaryFilter = (dietary) => {
+  function dietaryFunction(dietary) {
     setFilters({ ...filters, dietary });
-  };
+  }
 
   // Handle searching for recipes by name
-  const handleSearchFilter = (search) => {
+  function searchFunction(search) {
     setFilters({ ...filters, search });
-  };
+  }
 
   // This here is for filtering recipes based on current filters and favorites state (I had a tough time with this and had some AI assistence, even though it was a constant uphill battle to get the result I'd understand and want)
   const filteredRecipes = recipes.filter((recipe) => {
     const { dietary, search } = filters;
     // React actually has strange multiple if statements (in terms of layering), so this was an interesting exp
-    if (showFavoritesOnly && !favorites.includes(recipe.id)) {
+    if (onlyFavorites && !favorites.includes(recipe.id)) {
       return false;
     }
     if (
@@ -105,7 +105,7 @@ function App() {
           type="text"
           placeholder="Search recipe"
           value={filters.search}
-          onChange={(e) => handleSearchFilter(e.target.value)}
+          onChange={(e) => searchFunction(e.target.value)}
         />
         {/* The part for dietary filters - I made it a drop down for easy access */}
         <label>
@@ -114,7 +114,7 @@ function App() {
             multiple
             value={filters.dietary}
             onChange={(e) =>
-              handleDietaryFilter(
+              dietaryFunction(
                 Array.from(e.target.selectedOptions, (option) => option.value)
               )
             }
@@ -132,12 +132,12 @@ function App() {
         {/* A button for showing only favorites */}
         <button
           className="favorite-btn"
-          onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+          onClick={() => defaultFavorites(!onlyFavorites)}
         >
-          {showFavoritesOnly ? "Show All Recipes" : "Show Favorites Only"}
+          {onlyFavorites ? "Show All Recipes" : "Show Favorites Only"}
         </button>
         {/* Button to clear filters */}
-        <button className="clear-btn" onClick={() => handleDietaryFilter([])}>
+        <button className="clear-btn" onClick={() => dietaryFunction([])}>
           Clear Filters
         </button>
       </div>
@@ -145,26 +145,26 @@ function App() {
       <RecipeList
         recipes={filteredRecipes}
         favorites={favorites}
-        onFavorite={handleFavorite}
-        showFavoritesOnly={showFavoritesOnly}
+        onFavorite={favoriteFunction}
+        onlyFavorites={onlyFavorites}
       />
     </div>
   );
 }
 
 // RecipeCard component
-const RecipeCard = ({ recipe, onFavorite, isFavorite, showFavoritesOnly }) => {
+function RecipeCard({ recipe, onFavorite, isFavorite, onlyFavorites }) {
   // Destructuring the recipe object for easy access to all its properties
   const { id, name, description, time, imageName, ingredients, dietary } =
     recipe;
 
   // Function to handle adding/removing recipe from favorites
-  const handleFavorite = () => {
+  function favoriteFunction() {
     onFavorite(id);
-  };
+  }
 
-  // Render nothing if showFavoritesOnly is true and recipe is not a favorite
-  if (showFavoritesOnly && !isFavorite) {
+  // Render nothing if onlyFavorites is true and recipe is not a favorite
+  if (onlyFavorites && !isFavorite) {
     return null;
   }
 
@@ -189,30 +189,32 @@ const RecipeCard = ({ recipe, onFavorite, isFavorite, showFavoritesOnly }) => {
         ))}
       </div>
       {/* Button to add/remove from favorites */}
-      <button className="add-btn" onClick={handleFavorite}>
+      <button className="add-btn" onClick={favoriteFunction}>
         {isFavorite ? "Remove from Favorites" : "Favorite"}
       </button>
     </ul>
   );
-};
+}
 
 // RecipeList component
-const RecipeList = ({ recipes, favorites, onFavorite, showFavoritesOnly }) => {
+function RecipeList({ recipes, favorites, onFavorite, onlyFavorites }) {
   // Rendering list of RecipeCard components
   return (
     <div className="recipe-list">
+      {/* Mapping through the recipe data to access each object's properties before using the the recipe prop to render all of them */}
       {recipes.map((recipe) => (
         <RecipeCard
           key={recipe.id}
           recipe={recipe}
           onFavorite={onFavorite}
+          // This here checks if the current recipe's ID exists in the favorites array
           isFavorite={favorites.includes(recipe.id)}
-          showFavoritesOnly={showFavoritesOnly}
+          onlyFavorites={onlyFavorites}
         />
       ))}
     </div>
   );
-};
+}
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
